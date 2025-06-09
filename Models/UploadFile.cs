@@ -1,6 +1,8 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations; // needed because i am using the display attrib from .DataAnnotations
 
+// This is the database model - it defines what is savees in the db
+
 namespace ep_synoptic_2005.Models
 {
     public class UploadFile
