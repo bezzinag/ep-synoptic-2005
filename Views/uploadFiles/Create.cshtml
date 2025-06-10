@@ -13,6 +13,10 @@
     </div>
 }
 
+<!-- 🔹 Add this button -->
+<p>
+    <a asp-action="Index" class="btn btn-link">View My Files</a>
+</p>
 
 <form asp-action="Create" method="post" enctype="multipart/form-data">
     <div class="form-group">
@@ -31,5 +35,7 @@
 </form>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -30,7 +30,7 @@ namespace ep_synoptic_2005.Controllers
 
         // GET: UploadFiles/Create
         [HttpGet]
-        public async Task<IActionResult> InjectedTest([FromServices] IUploadFileRepository repo)
+        public async Task<IActionResult> InjectedTest([FromServices] IUploadFileRepository repo) // is this working?// in my code//
         {
             var userId = _userManager.GetUserId(User);
             var files = await repo.GetFilesByUserAsync(userId);
@@ -49,7 +49,7 @@ namespace ep_synoptic_2005.Controllers
         // POST: UploadFiles/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(UploadFileViewModel model)
+        public async Task<IActionResult> Create(UploadFileViewModel model) // method injection
         {
             if (!ModelState.IsValid)
                 return View(model);
@@ -72,7 +72,7 @@ namespace ep_synoptic_2005.Controllers
 
             var uploadedFile = new UploadFile
             {
-                Title = model.Title,
+                Title = Path.GetFileName(model.File.FileName),
                 StoredFileName = uniqueFileName,
                 UploadedByUserId = _userManager.GetUserId(User),
                 UploadedDate = DateTime.Now
@@ -104,7 +104,8 @@ namespace ep_synoptic_2005.Controllers
             if (!System.IO.File.Exists(filePath)) return NotFound();
 
             var contentType = "application/octet-stream";
-            return PhysicalFile(filePath, contentType, file.Title);
+            return PhysicalFile(filePath, contentType, $"{file.Title}{Path.GetExtension(file.StoredFileName)}"); //better
+
         }
 
 
