@@ -1,4 +1,5 @@
 using ep_synoptic_2005.Data;
+using ep_synoptic_2005.Filters;
 using ep_synoptic_2005.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.Requ
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IUploadFileRepository, UploadFileRepository>(); // Register the repository service for file uploads
+
+builder.Services.AddScoped<OwnershipFilter>();
 
 
 var app = builder.Build();
@@ -40,8 +43,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=UploadFiles}/{action=Create}/{id?}"); // set default route to UploadFiles/Create
-
+    pattern: "{controller=UploadFiles}/{action=Create}/{id?}");
 app.MapRazorPages();
 
 app.Run();

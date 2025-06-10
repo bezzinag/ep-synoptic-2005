@@ -30,5 +30,10 @@ namespace ep_synoptic_2005.Services
                 .ToListAsync();
         }
 
+        public async Task<UploadFile> GetByIdAsync(int id)
+        {
+            return await _context.UploadFiles.FirstOrDefaultAsync(f => f.Id == id);
+        }
+
     }
 }

@@ -1,0 +1,29 @@
+﻿@model List<ep_synoptic_2005.Models.UploadFile>
+
+@{
+    ViewData["Title"] = "My Files";
+}
+
+<h2>My Uploaded Files</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Upload Date</th>
+            <th>Download</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var file in Model)
+        {
+            <tr>
+                <td>@file.Title</td>
+                <td>@file.UploadedDate.ToString("g")</td>
+                <td>
+                    <a asp-action="Download" asp-route-id="@file.Id" class="btn btn-sm btn-primary">Download</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

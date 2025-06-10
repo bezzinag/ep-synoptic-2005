@@ -1,9 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using ep_synoptic_2005.Filters;
 using ep_synoptic_2005.Models;
 using ep_synoptic_2005.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
-
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IO;
@@ -85,9 +85,31 @@ namespace ep_synoptic_2005.Controllers
             return RedirectToAction("Create");
         }
 
- 
+        [HttpGet]
+        public async Task<IActionResult> Index()
+        {
+            var userId = _userManager.GetUserId(User);
+            var files = await _repository.GetFilesByUserAsync(userId);
+            return View(files);
+        }
 
-        
+        [Authorize]
+        [ServiceFilter(typeof(OwnershipFilter))]
+        public async Task<IActionResult> Download(int id)
+        {
+            var file = await _repository.GetByIdAsync(id);
+            if (file == null) return NotFound();
+
+            var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", file.StoredFileName);
+            if (!System.IO.File.Exists(filePath)) return NotFound();
+
+            var contentType = "application/octet-stream";
+            return PhysicalFile(filePath, contentType, file.Title);
+        }
+
+
+
+
 
     }
 }

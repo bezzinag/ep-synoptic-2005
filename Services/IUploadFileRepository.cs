@@ -9,6 +9,8 @@ namespace ep_synoptic_2005.Services
 
         Task<List<UploadFile>> GetFilesByUserAsync(string userId);
 
+        Task<UploadFile> GetByIdAsync(int id);
+
 
 
 
