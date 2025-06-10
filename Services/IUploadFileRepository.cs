@@ -6,7 +6,10 @@ namespace ep_synoptic_2005.Services
     public interface IUploadFileRepository
     {
         Task SaveAsync(UploadFile file);
-        Task<List<UploadFile>> GetFilesByUserAsync(string userId); // Method to retrieve files uploaded by a specific user
+       
+
+       
+
     }
 
 }

@@ -22,11 +22,6 @@ namespace ep_synoptic_2005.Services
             _context.UploadFiles.Add(file);
             await _context.SaveChangesAsync();
         }
-        public async Task<List<UploadFile>> GetFilesByUserAsync(string userId) // Method to retrieve files uploaded by a specific user
-        {
-            return await _context.UploadFiles
-                                 .Where(f => f.UploadedByUserId == userId)
-                                 .ToListAsync();
-        }
+       
     }
 }

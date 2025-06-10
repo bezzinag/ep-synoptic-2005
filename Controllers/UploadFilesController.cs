@@ -73,10 +73,9 @@ namespace ep_synoptic_2005.Controllers
             return RedirectToAction("Create");
         }
 
-        public async Task<IActionResult> Index() // List all uploaded files by the user8
-        {
-            var files = await _repository.GetFilesByUserAsync(User.Identity.Name);
-            return View(files);
-        }
+ 
+
+        
+
     }
 }
