@@ -1,4 +1,5 @@
 using ep_synoptic_2005.Data;
+using ep_synoptic_2005.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false) //set to false for as not needed for assignment
     .AddEntityFrameworkStores<ApplicationDbContext>();
 builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<IUploadFileRepository, UploadFileRepository>(); // Register the repository service for file uploads
+
 
 var app = builder.Build();
 
@@ -28,7 +31,7 @@ else
     app.UseHsts();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();

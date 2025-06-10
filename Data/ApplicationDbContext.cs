@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using ep_synoptic_2005.Models;
 
 namespace ep_synoptic_2005.Data
 {
@@ -9,5 +10,7 @@ namespace ep_synoptic_2005.Data
             : base(options)
         {
         }
+
+        public DbSet<UploadFile> UploadFiles { get; set; }
     }
 }

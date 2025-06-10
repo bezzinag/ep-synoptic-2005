@@ -1,0 +1,30 @@
+﻿@model List<ep_synoptic_2005.Models.UploadFile>
+
+<h2>Your Uploaded Files</h2>
+
+@if (!Model.Any())
+{
+    <p>No files uploaded yet.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Stored File Name</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var file in Model)
+            {
+                <tr>
+                    <td>@file.Title</td>
+                    <td>@file.StoredFileName</td>
+                    <td>@file.UploadedDate.ToString("g")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
