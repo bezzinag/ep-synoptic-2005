@@ -1,9 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http; // needed for IFormFile for file uploads   
-
-// This is the UI/form model - what the user will see and interact with
-
-
+using Microsoft.AspNetCore.Http;
 
 namespace ep_synoptic_2005.Models
 {

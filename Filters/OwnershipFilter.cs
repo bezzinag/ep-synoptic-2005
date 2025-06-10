@@ -1,9 +1,8 @@
 ﻿using ep_synoptic_2005.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Identity;
 
 namespace ep_synoptic_2005.Filters
 {
@@ -28,7 +27,7 @@ namespace ep_synoptic_2005.Filters
                 var file = await _repository.GetByIdAsync(id);
                 if (file == null || file.UploadedByUserId != userId)
                 {
-                    context.Result = new ForbidResult(); // or RedirectToAction("AccessDenied")
+                    context.Result = new ForbidResult();
                     return;
                 }
             }

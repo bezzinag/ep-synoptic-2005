@@ -28,9 +28,8 @@ namespace ep_synoptic_2005.Controllers
             _userManager = userManager;
         }
 
-        // GET: UploadFiles/Create
         [HttpGet]
-        public async Task<IActionResult> InjectedTest([FromServices] IUploadFileRepository repo) // is this working?// in my code//
+        public async Task<IActionResult> InjectedTest([FromServices] IUploadFileRepository repo)
         {
             var userId = _userManager.GetUserId(User);
             var files = await repo.GetFilesByUserAsync(userId);
@@ -45,19 +44,16 @@ namespace ep_synoptic_2005.Controllers
             return View();
         }
 
-
-        // POST: UploadFiles/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(UploadFileViewModel model) // method injection
+        public async Task<IActionResult> Create(UploadFileViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
 
-            var uniqueFileName = Guid.NewGuid().ToString() + "_" + Path.GetFileName(model.File.FileName);
-
+            var originalFileName = Path.GetFileName(model.File.FileName);
+            var uniqueFileName = Guid.NewGuid() + "_" + originalFileName;
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
-
 
             if (!Directory.Exists(uploadsFolder))
             {
@@ -72,13 +68,13 @@ namespace ep_synoptic_2005.Controllers
 
             var uploadedFile = new UploadFile
             {
-                Title = Path.GetFileName(model.File.FileName),
+                Title = model.Title,
+                OriginalFileName = originalFileName,
                 StoredFileName = uniqueFileName,
                 UploadedByUserId = _userManager.GetUserId(User),
                 UploadedDate = DateTime.Now
             };
 
-            // ✅ Save to DB using repository
             await _repository.SaveAsync(uploadedFile);
 
             TempData["Success"] = "File uploaded successfully.";
@@ -98,19 +94,15 @@ namespace ep_synoptic_2005.Controllers
         public async Task<IActionResult> Download(int id)
         {
             var file = await _repository.GetByIdAsync(id);
-            if (file == null) return NotFound();
+            if (file == null)
+                return NotFound();
 
             var filePath = Path.Combine(_webHostEnvironment.WebRootPath, "uploads", file.StoredFileName);
-            if (!System.IO.File.Exists(filePath)) return NotFound();
+            if (!System.IO.File.Exists(filePath))
+                return NotFound();
 
             var contentType = "application/octet-stream";
-            return PhysicalFile(filePath, contentType, $"{file.Title}{Path.GetExtension(file.StoredFileName)}"); //better
-
+            return PhysicalFile(filePath, contentType, file.OriginalFileName);
         }
-
-
-
-
-
     }
 }

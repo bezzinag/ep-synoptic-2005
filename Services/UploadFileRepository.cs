@@ -1,10 +1,9 @@
 ﻿using ep_synoptic_2005.Data;
 using ep_synoptic_2005.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Threading.Tasks;
 
 namespace ep_synoptic_2005.Services
 {
@@ -32,8 +31,8 @@ namespace ep_synoptic_2005.Services
 
         public async Task<UploadFile> GetByIdAsync(int id)
         {
-            return await _context.UploadFiles.FirstOrDefaultAsync(f => f.Id == id);
+            return await _context.UploadFiles
+                .FirstOrDefaultAsync(f => f.Id == id);
         }
-
     }
 }

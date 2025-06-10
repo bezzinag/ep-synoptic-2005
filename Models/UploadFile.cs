@@ -1,7 +1,5 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations; // needed because i am using the display attrib from .DataAnnotations
-
-// This is the database model - it defines what is savees in the db
+using System.ComponentModel.DataAnnotations;
 
 namespace ep_synoptic_2005.Models
 {
@@ -20,5 +18,10 @@ namespace ep_synoptic_2005.Models
 
         [Required]
         public DateTime UploadedDate { get; set; }
+
+        [Required]
+        public string OriginalFileName { get; set; }
+
+        
     }
 }
