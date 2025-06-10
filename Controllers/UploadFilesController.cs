@@ -5,22 +5,22 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-
-// <summary>  UploadFilesController.cs
-//  This controller handles file uploads, downloads, and listing of uploaded files for authenticated users.
-//  It uses dependency injection to access the file repository and user management services.
+// <summary>
+// This controller handles file uploads, downloads, and management for logged-in users.
+// It provides actions for uploading files, viewing uploaded files, downloading files, and testing method injection.
+// The controller uses dependency injection to access the file repository and user management services.
 // </summary>
-
 namespace ep_synoptic_2005.Controllers
 {
     [Authorize]
     public class UploadFilesController : Controller
     {
+
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly IUploadFileRepository _repository;
         private readonly UserManager<IdentityUser> _userManager;
 
-        
+        // Constructor to inject dependencies
         public UploadFilesController(
             IWebHostEnvironment webHostEnvironment,
             IUploadFileRepository repository,
@@ -30,33 +30,15 @@ namespace ep_synoptic_2005.Controllers
             _repository = repository;
             _userManager = userManager;
         }
-        // <summary>
-        // This action method demonstrates method injection by retrieving the file repository from the service container.
-        // It fetches files uploaded by the current user and displays a success message.
-        // </summary>
-        [HttpGet]
-        public async Task<IActionResult> InjectedTest([FromServices] IUploadFileRepository repo)
-        {
-            var userId = _userManager.GetUserId(User);
-            var files = await repo.GetFilesByUserAsync(userId);
 
-            TempData["Success"] = $"Method injection succeeded. Found {files.Count} file(s).";
-            return RedirectToAction("Create");
-        }
-        // <summary>
-        // This action method displays a form for uploading files.
-        // It returns a view with an empty UploadFileViewModel for the user to fill out.
-        // </summary>
+        // GET: Display the file upload form
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-        // <summary>
-        // This action method handles the file upload process.
-        // It validates the model, saves the file to the server, and records the upload in the database.
-        // If successful, it redirects to the Create view with a success message.
-        // </summary>
+
+        // POST: Handle file upload
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UploadFileViewModel model)
@@ -64,14 +46,20 @@ namespace ep_synoptic_2005.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
+            var userId = _userManager.GetUserId(User);
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                TempData["Error"] = "You must be logged in to upload a file.";
+                return RedirectToAction("Create");
+            }
+
             var originalFileName = Path.GetFileName(model.File.FileName);
             var uniqueFileName = Guid.NewGuid() + "_" + originalFileName;
             var uploadsFolder = Path.Combine(_webHostEnvironment.WebRootPath, "uploads");
 
             if (!Directory.Exists(uploadsFolder))
-            {
                 Directory.CreateDirectory(uploadsFolder);
-            }
 
             var filePath = Path.Combine(uploadsFolder, uniqueFileName);
             using (var fileStream = new FileStream(filePath, FileMode.Create))
@@ -84,8 +72,8 @@ namespace ep_synoptic_2005.Controllers
                 Title = model.Title,
                 OriginalFileName = originalFileName,
                 StoredFileName = uniqueFileName,
-                UploadedByUserId = _userManager.GetUserId(User),
-                UploadedDate = DateTime.Now
+                UploadedByUserId = userId,
+                UploadedDate = DateTime.UtcNow
             };
 
             await _repository.SaveAsync(uploadedFile);
@@ -93,10 +81,8 @@ namespace ep_synoptic_2005.Controllers
             TempData["Success"] = "File uploaded successfully.";
             return RedirectToAction("Create");
         }
-        // <summary>
-        // This action method lists all files uploaded by the current user.
-        // It retrieves the files from the repository and returns them to the Index view.
-        // </summary>
+
+        // GET: List all uploaded files for the logged-in user
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -104,10 +90,8 @@ namespace ep_synoptic_2005.Controllers
             var files = await _repository.GetFilesByUserAsync(userId);
             return View(files);
         }
-        // <summary>
-        // This action method allows the user to download a file by its ID.
-        // It checks if the file exists and if the user has permission to access it, then serves the file for download.
-        // </summary>
+
+        // GET: Download a specific file by ID
         [Authorize]
         [ServiceFilter(typeof(OwnershipFilter))]
         public async Task<IActionResult> Download(int id)
@@ -122,6 +106,17 @@ namespace ep_synoptic_2005.Controllers
 
             var contentType = "application/octet-stream";
             return PhysicalFile(filePath, contentType, file.OriginalFileName);
+        }
+
+        // GET: Test method injection using FromServices attribute
+        [HttpGet]
+        public async Task<IActionResult> InjectedTest([FromServices] IUploadFileRepository repo)
+        {
+            var userId = _userManager.GetUserId(User);
+            var files = await repo.GetFilesByUserAsync(userId);
+
+            TempData["Success"] = $"Method injection succeeded. Found {files.Count} file(s).";
+            return RedirectToAction("Create");
         }
     }
 }
