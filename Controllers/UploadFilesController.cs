@@ -2,12 +2,14 @@
 using ep_synoptic_2005.Models;
 using ep_synoptic_2005.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.IO;
-using System.Threading.Tasks;
+
+
+// <summary>  UploadFilesController.cs
+//  This controller handles file uploads, downloads, and listing of uploaded files for authenticated users.
+//  It uses dependency injection to access the file repository and user management services.
+// </summary>
 
 namespace ep_synoptic_2005.Controllers
 {
@@ -18,6 +20,7 @@ namespace ep_synoptic_2005.Controllers
         private readonly IUploadFileRepository _repository;
         private readonly UserManager<IdentityUser> _userManager;
 
+        
         public UploadFilesController(
             IWebHostEnvironment webHostEnvironment,
             IUploadFileRepository repository,
@@ -27,7 +30,10 @@ namespace ep_synoptic_2005.Controllers
             _repository = repository;
             _userManager = userManager;
         }
-
+        // <summary>
+        // This action method demonstrates method injection by retrieving the file repository from the service container.
+        // It fetches files uploaded by the current user and displays a success message.
+        // </summary>
         [HttpGet]
         public async Task<IActionResult> InjectedTest([FromServices] IUploadFileRepository repo)
         {
@@ -37,13 +43,20 @@ namespace ep_synoptic_2005.Controllers
             TempData["Success"] = $"Method injection succeeded. Found {files.Count} file(s).";
             return RedirectToAction("Create");
         }
-
+        // <summary>
+        // This action method displays a form for uploading files.
+        // It returns a view with an empty UploadFileViewModel for the user to fill out.
+        // </summary>
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
+        // <summary>
+        // This action method handles the file upload process.
+        // It validates the model, saves the file to the server, and records the upload in the database.
+        // If successful, it redirects to the Create view with a success message.
+        // </summary>
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(UploadFileViewModel model)
@@ -80,7 +93,10 @@ namespace ep_synoptic_2005.Controllers
             TempData["Success"] = "File uploaded successfully.";
             return RedirectToAction("Create");
         }
-
+        // <summary>
+        // This action method lists all files uploaded by the current user.
+        // It retrieves the files from the repository and returns them to the Index view.
+        // </summary>
         [HttpGet]
         public async Task<IActionResult> Index()
         {
@@ -88,7 +104,10 @@ namespace ep_synoptic_2005.Controllers
             var files = await _repository.GetFilesByUserAsync(userId);
             return View(files);
         }
-
+        // <summary>
+        // This action method allows the user to download a file by its ID.
+        // It checks if the file exists and if the user has permission to access it, then serves the file for download.
+        // </summary>
         [Authorize]
         [ServiceFilter(typeof(OwnershipFilter))]
         public async Task<IActionResult> Download(int id)

@@ -1,7 +1,10 @@
 ﻿using ep_synoptic_2005.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
+
+// <summary>
+// This interface defines the contract for the upload file repository service.
+// It includes methods for saving files, retrieving files by user, and getting a file by its ID.
+// </summary>
 namespace ep_synoptic_2005.Services
 {
     public interface IUploadFileRepository

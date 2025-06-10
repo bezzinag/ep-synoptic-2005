@@ -2,21 +2,25 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using System.Threading.Tasks;
 
+// <summary>
+// This filter checks if the user is the owner of the file being accessed.
+// If the user is not the owner, it returns a 403 Forbidden response.
+// </summary>
 namespace ep_synoptic_2005.Filters
 {
+
     public class OwnershipFilter : IAsyncActionFilter
     {
         private readonly IUploadFileRepository _repository;
         private readonly UserManager<IdentityUser> _userManager;
-
+        
         public OwnershipFilter(IUploadFileRepository repository, UserManager<IdentityUser> userManager)
         {
             _repository = repository;
             _userManager = userManager;
         }
-
+ 
         public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
         {
             if (context.ActionArguments.TryGetValue("id", out var idObj) && idObj is int id)

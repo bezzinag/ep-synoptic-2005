@@ -1,7 +1,7 @@
 using System.Diagnostics;
 using ep_synoptic_2005.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
+
 
 namespace ep_synoptic_2005.Controllers
 {
@@ -14,7 +14,7 @@ namespace ep_synoptic_2005.Controllers
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Index() 
         {
             return View();
         }
