@@ -29,10 +29,22 @@ namespace ep_synoptic_2005.Controllers
         }
 
         // GET: UploadFiles/Create
+        [HttpGet]
+        public async Task<IActionResult> InjectedTest([FromServices] IUploadFileRepository repo)
+        {
+            var userId = _userManager.GetUserId(User);
+            var files = await repo.GetFilesByUserAsync(userId);
+
+            TempData["Success"] = $"Method injection succeeded. Found {files.Count} file(s).";
+            return RedirectToAction("Create");
+        }
+
+        [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
+
 
         // POST: UploadFiles/Create
         [HttpPost]

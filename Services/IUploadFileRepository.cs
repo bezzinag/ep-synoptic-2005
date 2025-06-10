@@ -6,9 +6,12 @@ namespace ep_synoptic_2005.Services
     public interface IUploadFileRepository
     {
         Task SaveAsync(UploadFile file);
-       
 
-       
+        Task<List<UploadFile>> GetFilesByUserAsync(string userId);
+
+
+
+
 
     }
 

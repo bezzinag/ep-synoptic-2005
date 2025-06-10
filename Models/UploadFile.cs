@@ -8,15 +8,17 @@ namespace ep_synoptic_2005.Models
     public class UploadFile
     {
         public int Id { get; set; }
+
         [Required]
-        [Display(Name = "File Title")] // like this Title will show as a nice "File title"
         public string Title { get; set; }
 
+        [Required]
         public string StoredFileName { get; set; }
 
+        [Required]
         public string UploadedByUserId { get; set; }
 
+        [Required]
         public DateTime UploadedDate { get; set; }
-
     }
 }
